@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 int main() {
-    title *t = title_init("god");
+    title *t = init_title("god");
     title_add_prefix(t, 1);
     title_add_prefix(t, 2);
     title_add_prefix(t, 6);
