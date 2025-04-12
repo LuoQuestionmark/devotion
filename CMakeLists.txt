@@ -11,9 +11,14 @@ include_directories(include)
 # main executable
 add_executable(main
     src/devotion.c
-    src/board.c
-    src/callback.c
+    src/gameplay/board.c
+    src/gui/callback.c
     src/gui/gui_board.c
 )
 target_include_directories(main PRIVATE ${SDL2_INCLUDE_DIRS})
 target_link_libraries(main ${SDL2_LIBRARIES} m)
+
+add_executable(title_test
+    src/gameplay/title.c
+    test/title_test.c
+)
