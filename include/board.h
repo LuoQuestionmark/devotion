@@ -4,18 +4,23 @@
 #include "olive.c"
 #include <stdint.h>
 
-#define EDGE_LEN 50
-#define BOARD_HEIGHT 10
-#define BOARD_WIDTH 10
-
 #define REFRESHING_INTEVAL 1.0
 
-// ABGR
-#define GREEN 0xFF73D900
-#define LIGHT_BLUE 0xFFE6FFBF
+enum cell_type {
+    CELL_EMPTY = 0,
+    CELL_GRASS,
+    CELL_WATER,
+};
+
+enum cell_creature {
+    CREATURE_EMPTY = 0,
+    CREATURE_AMANT,
+    CREATURE_BEAST
+};
 
 struct cell {
-    uint16_t data;
+    enum cell_type type;
+    enum cell_creature creature;
 };
 typedef struct cell cell;
 
@@ -26,9 +31,21 @@ struct board {
 };
 typedef struct board board;
 
+struct cell_list {
+    int len;
+    int *indices;
+};
+typedef struct cell_list cell_list;
+
 board *init_board();
 void board_init_env(board *board);
 void board_update(board *board, float dt);
+void board_stats(board *board);
+void board_free(board *board);
+
+cell_list *board_cell_next(board *board, int cell_row, int cell_col);
+void cell_list_free(cell_list *cell_list);
+
 void draw_board(Olivec_Canvas canvas, board *board);
 
 #endif
