@@ -3,8 +3,8 @@
 
 // GUI
 #define BOARD_EDGE_LEN 50
-#define BOARD_HEIGHT 10
-#define BOARD_WIDTH 10
+#define BOARD_HEIGHT 12
+#define BOARD_WIDTH 12
 
 // COLOR
 // format ABGR

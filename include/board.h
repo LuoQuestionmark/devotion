@@ -1,7 +1,6 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include "olive.c"
 #include <stdint.h>
 
 #define REFRESHING_INTEVAL 1.0
@@ -45,7 +44,5 @@ void board_free(board *board);
 
 cell_list *board_cell_next(board *board, int cell_row, int cell_col);
 void cell_list_free(cell_list *cell_list);
-
-void draw_board(Olivec_Canvas canvas, board *board);
 
 #endif

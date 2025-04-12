@@ -12,6 +12,8 @@ include_directories(include)
 add_executable(main
     src/devotion.c
     src/board.c
+    src/callback.c
+    src/gui/gui_board.c
 )
 target_include_directories(main PRIVATE ${SDL2_INCLUDE_DIRS})
 target_link_libraries(main ${SDL2_LIBRARIES} m)
