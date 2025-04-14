@@ -13,9 +13,11 @@ add_executable(main
     src/devotion.c
     src/gameplay/board.c
     src/gameplay/title.c
+    src/gameplay/god_intervention.c
     src/gui/callback.c
     src/gui/gui_board.c
     src/gui/gui_title.c
+    src/gui/gui_god_intervention.c
 )
 target_include_directories(main PRIVATE ${SDL2_INCLUDE_DIRS})
 target_link_libraries(main ${SDL2_LIBRARIES} m)

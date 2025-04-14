@@ -5,13 +5,13 @@
 void draw_board(Olivec_Canvas canvas, board *bd) {
     for (int i = 0; i < bd->row; i++) {
         for (int j = 0; j < bd->col; j++) {
-            uint32_t color = LIGHT_BLUE;
+            uint32_t color = CALAMINE_BLUE;
             switch (bd->cells[i * BOARD_WIDTH + j].type) {
             case CELL_WATER:
                 color = BLUE;
                 break;
             case CELL_EMPTY:
-                color = LIGHT_BLUE;
+                color = CALAMINE_BLUE;
                 break;
             case CELL_GRASS:
                 color = GREEN;

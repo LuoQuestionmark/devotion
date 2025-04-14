@@ -1,8 +1,10 @@
 #include "config.h"
 #include "gameplay/board.h"
+#include "gameplay/god_intervention.h"
 #include "gameplay/title.h"
 #include "gui/callback.h"
 #include "gui/gui_board.h"
+#include "gui/gui_god_intervention.h"
 #include "gui/gui_title.h"
 
 static uint32_t pixels[WIDTH * HEIGHT];
@@ -40,13 +42,14 @@ static bool vc_sdl_resize_texture(SDL_Renderer *renderer, size_t new_width, size
     return true;
 }
 
-Olivec_Canvas vc_render(board *board, title *title, float dt) {
+Olivec_Canvas vc_render(board *board, title *title, intervention_list *list, float dt) {
     Olivec_Canvas oc = olivec_canvas(pixels, WIDTH, HEIGHT, WIDTH);
 
     olivec_fill(oc, BACKGROUND_COLOR);
     board_update(board, dt);
     draw_board(oc, board);
     draw_title(oc, title);
+    draw_interventions(oc, list);
 
     return oc;
 }
@@ -57,8 +60,9 @@ int main(void) {
     SDL_Window *window     = NULL;
     SDL_Renderer *renderer = NULL;
 
-    board *bd = init_board();
-    title *tl = init_title("god");
+    board *bd               = init_board();
+    title *tl               = init_title("god");
+    intervention_list *list = init_intervention_list();
 
     title_add_prefix(tl, 1);
     title_add_prefix(tl, 2);
@@ -68,6 +72,13 @@ int main(void) {
     title_add_prefix(tl, 6);
     title_add_prefix(tl, 7);
     title_add_prefix(tl, 8);
+
+    intervention_list_add(list, 0);
+    intervention_list_add(list, 1);
+    intervention_list_add(list, 2);
+    intervention_list_add(list, 3);
+    intervention_list_add(list, 4);
+    intervention_list_add(list, 5);
 
     {
         if (SDL_Init(SDL_INIT_VIDEO) < 0) return_defer(1);
@@ -107,7 +118,7 @@ int main(void) {
 
             if (!pause) {
                 // Render the texture
-                Olivec_Canvas oc_src = vc_render(bd, tl, dt);
+                Olivec_Canvas oc_src = vc_render(bd, tl, list, dt);
                 if (oc_src.width != vc_sdl_actual_width || oc_src.height != vc_sdl_actual_height) {
                     if (!vc_sdl_resize_texture(renderer, oc_src.width, oc_src.height))
                         return_defer(1);
@@ -151,5 +162,7 @@ defer:
 
     board_free(bd);
     title_free(tl);
+    intervention_list_free(list);
+
     return result;
 }

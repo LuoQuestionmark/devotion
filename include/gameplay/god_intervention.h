@@ -11,17 +11,18 @@
 struct intervention {
     int id;
     char *name;
+    char *description;
     int (*callback)(board *bd, int row, int col, time_t timestamp);
 };
 typedef struct intervention intervention;
 
 static const intervention intervention_table[INTERVENTION_MAX_COUNT] = {
-    { .id = 0, .name = "INTERVENTION 1", .callback = NULL },
-    { .id = 1, .name = "INTERVENTION 2", .callback = NULL },
-    { .id = 2, .name = "INTERVENTION 3", .callback = NULL },
-    { .id = 3, .name = "INTERVENTION 4", .callback = NULL },
-    { .id = 4, .name = "INTERVENTION 5", .callback = NULL },
-    { .id = 5, .name = "INTERVENTION 6", .callback = NULL },
+    { .id = 0, .name = "intervention 1", .description = "description 1", .callback = NULL },
+    { .id = 1, .name = "intervention 2", .description = "description 2", .callback = NULL },
+    { .id = 2, .name = "intervention 3", .description = "description 3", .callback = NULL },
+    { .id = 3, .name = "intervention 4", .description = "description 4", .callback = NULL },
+    { .id = 4, .name = "intervention 5", .description = "description 5", .callback = NULL },
+    { .id = 5, .name = "intervention 6", .description = "description 6", .callback = NULL },
 };
 
 struct intervention_list {
