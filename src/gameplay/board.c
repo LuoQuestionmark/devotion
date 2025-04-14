@@ -67,7 +67,7 @@ void board_stats(board *board) {
     }
 
     printf("board row = %d, col = %d\n", board->row, board->col);
-    printf("water: %d, grass: %d\n, fire: %d", water_count, grass_count, fire_count);
+    printf("water: %d, grass: %d\n, fire: %d\n", water_count, grass_count, fire_count);
 }
 
 void board_free(board *board) {
