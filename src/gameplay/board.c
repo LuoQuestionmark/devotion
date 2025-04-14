@@ -130,20 +130,16 @@ cell_list *board_cell_next(board *board, int cell_row, int cell_col) {
     is_leftmost  = cell_col == 0;
     is_rightmost = cell_col == BOARD_WIDTH - 1;
 
-    int neighbors = 8;
+    int neighbors = 4;
     switch (is_top + is_button + is_leftmost + is_rightmost) {
     case 0:
-        neighbors = 8;
+        neighbors = 4;
         break;
     case 1:
-        neighbors = 5;
+        neighbors = 3;
         break;
     case 2:
-        if ((is_top && is_button) || (is_leftmost && is_rightmost)) {
-            neighbors = 2;
-        } else {
-            neighbors = 3;
-        }
+        neighbors = 2;
         break;
     case 3:
         neighbors = 1;
