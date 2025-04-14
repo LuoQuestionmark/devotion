@@ -17,6 +17,7 @@ void draw_board(Olivec_Canvas canvas, board *bd) {
                 color = GREEN;
                 break;
             case CELL_FIRE:
+            case CELL_BURNT:
                 color = POMEGRANATE_PURPLE;
                 break;
             }

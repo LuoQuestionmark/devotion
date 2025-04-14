@@ -4,17 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static void board_transform(board *board, enum cell_type src, enum cell_type tgt, float rate) {
-    const int threshold = (int)(rate * RAND_MAX);
-    for (int i = 0; i < board->row; i++) {
-        for (int j = 0; j < board->col; j++) {
-            if (board->cells[i * BOARD_WIDTH + j].type == src && rand() < threshold) {
-                board->cells[i * BOARD_WIDTH + j].type = tgt;
-            }
-        }
-    }
-}
-
 board *init_board() {
     srand(42); // DEBUG
 
@@ -30,32 +19,10 @@ board *init_board() {
 
 void board_init_env(board *board) {
     // init water
-    int water_spawn_threshold = (int)(WATER_SPAWN_RATE * RAND_MAX);
-    for (int i = 0; i < board->row; i++) {
-        for (int j = 0; j < board->col; j++) {
-            if (rand() < water_spawn_threshold) {
-                board->cells[i * BOARD_WIDTH + j].type = CELL_WATER;
-            }
-        }
-    }
+    board_transform(board, CELL_EMPTY, CELL_WATER, WATER_SPAWN_RATE);
 
     // init grass
-    int grass_spawn_threshold = (int)(GRASS_SPAWN_RATE * RAND_MAX);
-    for (int i = 0; i < board->row; i++) {
-        for (int j = 0; j < board->col; j++) {
-            if (board->cells[i * BOARD_WIDTH + j].type == CELL_WATER) {
-                cell_list *c_list = board_cell_next(board, i, j);
-
-                for (int k = 0; k < c_list->len; k++) {
-                    if (rand() < grass_spawn_threshold) {
-                        board->cells[c_list->indices[k]].type = CELL_GRASS;
-                    }
-                }
-
-                cell_list_free(c_list);
-            }
-        }
-    }
+    board_transform_if_neighbor(board, CELL_EMPTY, CELL_GRASS, CELL_WATER, GRASS_SPAWN_RATE);
 }
 
 void board_update(board *board, float dt) {
@@ -63,11 +30,16 @@ void board_update(board *board, float dt) {
     cumulative_time_lapse += dt;
     if (cumulative_time_lapse < REFRESHING_INTEVAL) return;
 
-    cumulative_time_lapse -= 1;
+    cumulative_time_lapse -= REFRESHING_INTEVAL;
 
+    board_transform(board, CELL_BURNT, CELL_EMPTY, FIRE_EXTINGUISHMENT_RATE);
+    board_transform_if_neighbor(board, CELL_GRASS, CELL_FIRE, CELL_FIRE, FIRE_TRANSMISSION_RATE);
+    board_transform_if_neighbor(board, CELL_GRASS, CELL_FIRE, CELL_BURNT, FIRE_TRANSMISSION_RATE);
+    board_transform(board, CELL_FIRE, CELL_BURNT, FIRE_EXTINGUISHMENT_RATE);
     board_transform(board, CELL_GRASS, CELL_FIRE, GRASS_IGNITE_RATE);
-    board_transform(board, CELL_FIRE, CELL_EMPTY, FIRE_EXTINGUISHMENT_RATE);
-    board_transform(board, CELL_EMPTY, CELL_GRASS, GRASS_SPAWN_RATE);
+    board_transform_if_neighbor(board, CELL_EMPTY, CELL_GRASS, CELL_WATER, GRASS_SPAWN_RATE);
+
+    board_backup_type(board);
 }
 
 void board_stats(board *board) {
@@ -87,6 +59,7 @@ void board_stats(board *board) {
                 grass_count += 1;
                 break;
             case CELL_FIRE:
+            case CELL_BURNT:
                 fire_count += 1;
                 break;
             }
@@ -100,6 +73,54 @@ void board_stats(board *board) {
 void board_free(board *board) {
     free(board->cells);
     free(board);
+}
+
+void board_transform(board *board, enum cell_type src, enum cell_type tgt, float rate) {
+    const int threshold = (int)(rate * RAND_MAX);
+    for (int i = 0; i < board->row; i++) {
+        for (int j = 0; j < board->col; j++) {
+            cell *cell = board->cells + i * BOARD_WIDTH + j;
+            if (cell->last_type == src && rand() <= threshold) {
+                cell->type = tgt;
+            }
+        }
+    }
+}
+
+void board_transform_if_neighbor(board *board, enum cell_type src, enum cell_type tgt,
+                                 enum cell_type nbr, float rate) {
+    int threshold = (int)(rate * RAND_MAX);
+    for (int i = 0; i < board->row; i++) {
+        for (int j = 0; j < board->col; j++) {
+            // if the cell is not concerned, skip
+            if (board->cells[i * BOARD_WIDTH + j].last_type != src) continue;
+
+            // if no transform then skip
+            if (rand() > threshold) continue;
+
+            // transform if a neighbor is valid
+            cell_list *c_list = board_cell_next(board, i, j);
+            cell *cell;
+            for (int k = 0; k < c_list->len; k++) {
+                cell = board->cells + c_list->indices[k];
+                if (cell->last_type == nbr) {
+                    board->cells[i * BOARD_WIDTH + j].type = tgt;
+                    break;
+                }
+            }
+            cell_list_free(c_list);
+        }
+    }
+}
+
+void board_backup_type(board *board) {
+    for (int i = 0; i < board->row; i++) {
+        for (int j = 0; j < board->col; j++) {
+            cell *cell = board->cells + i * BOARD_WIDTH + j;
+
+            cell->last_type = cell->type;
+        }
+    }
 }
 
 cell_list *board_cell_next(board *board, int cell_row, int cell_col) {
@@ -139,30 +160,30 @@ cell_list *board_cell_next(board *board, int cell_row, int cell_col) {
     ret->indices   = calloc(neighbors, sizeof(int));
 
     int index = 0;
-    if (!is_top && !is_leftmost) {
-        ret->indices[index++] = (cell_row - 1) * BOARD_WIDTH + cell_col - 1;
-    }
+    // if (!is_top && !is_leftmost) {
+    //     ret->indices[index++] = (cell_row - 1) * BOARD_WIDTH + cell_col - 1;
+    // }
     if (!is_top) {
         ret->indices[index++] = (cell_row - 1) * BOARD_WIDTH + cell_col + 0;
     }
-    if (!is_top && !is_rightmost) {
-        ret->indices[index++] = (cell_row - 1) * BOARD_WIDTH + cell_col + 1;
-    }
+    // if (!is_top && !is_rightmost) {
+    //     ret->indices[index++] = (cell_row - 1) * BOARD_WIDTH + cell_col + 1;
+    // }
     if (!is_leftmost) {
         ret->indices[index++] = (cell_row + 0) * BOARD_WIDTH + cell_col - 1;
     }
     if (!is_rightmost) {
         ret->indices[index++] = (cell_row + 0) * BOARD_WIDTH + cell_col + 1;
     }
-    if (!is_leftmost && !is_button) {
-        ret->indices[index++] = (cell_row + 1) * BOARD_WIDTH + cell_col - 1;
-    }
+    // if (!is_leftmost && !is_button) {
+    //     ret->indices[index++] = (cell_row + 1) * BOARD_WIDTH + cell_col - 1;
+    // }
     if (!is_button) {
         ret->indices[index++] = (cell_row + 1) * BOARD_WIDTH + cell_col + 0;
     }
-    if (!is_rightmost && !is_button) {
-        ret->indices[index++] = (cell_row + 1) * BOARD_WIDTH + cell_col + 1;
-    }
+    // if (!is_rightmost && !is_button) {
+    //     ret->indices[index++] = (cell_row + 1) * BOARD_WIDTH + cell_col + 1;
+    // }
 
     return ret;
 }
