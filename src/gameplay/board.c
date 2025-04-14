@@ -4,6 +4,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+static void board_transform(board *board, enum cell_type src, enum cell_type tgt, float rate) {
+    const int threshold = (int)(rate * RAND_MAX);
+    for (int i = 0; i < board->row; i++) {
+        for (int j = 0; j < board->col; j++) {
+            if (board->cells[i * BOARD_WIDTH + j].type == src && rand() < threshold) {
+                board->cells[i * BOARD_WIDTH + j].type = tgt;
+            }
+        }
+    }
+}
+
 board *init_board() {
     srand(42); // DEBUG
 
@@ -18,7 +29,7 @@ board *init_board() {
 }
 
 void board_init_env(board *board) {
-    // init water and water
+    // init water
     int water_spawn_threshold = (int)(WATER_SPAWN_RATE * RAND_MAX);
     for (int i = 0; i < board->row; i++) {
         for (int j = 0; j < board->col; j++) {
@@ -53,13 +64,16 @@ void board_update(board *board, float dt) {
     if (cumulative_time_lapse < REFRESHING_INTEVAL) return;
 
     cumulative_time_lapse -= 1;
-    // board_stats(board);
-    // TODO: more updates
+
+    board_transform(board, CELL_GRASS, CELL_FIRE, GRASS_IGNITE_RATE);
+    board_transform(board, CELL_FIRE, CELL_EMPTY, FIRE_EXTINGUISHMENT_RATE);
+    board_transform(board, CELL_EMPTY, CELL_GRASS, GRASS_SPAWN_RATE);
 }
 
 void board_stats(board *board) {
     int water_count = 0;
     int grass_count = 0;
+    int fire_count  = 0;
 
     for (int i = 0; i < board->row; i++) {
         for (int j = 0; j < board->col; j++) {
@@ -72,12 +86,15 @@ void board_stats(board *board) {
             case CELL_GRASS:
                 grass_count += 1;
                 break;
+            case CELL_FIRE:
+                fire_count += 1;
+                break;
             }
         }
     }
 
     printf("board row = %d, col = %d\n", board->row, board->col);
-    printf("water: %d, grass: %d\n", water_count, grass_count);
+    printf("water: %d, grass: %d\n, fire: %d", water_count, grass_count, fire_count);
 }
 
 void board_free(board *board) {

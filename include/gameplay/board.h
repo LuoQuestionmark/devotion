@@ -9,6 +9,7 @@ enum cell_type {
     CELL_EMPTY = 0,
     CELL_GRASS,
     CELL_WATER,
+    CELL_FIRE,
 };
 
 enum cell_creature {
