@@ -16,7 +16,9 @@ add_executable(main
     src/gameplay/god_intervention.c
     src/gameplay/god_intervention_impl.c
     src/gameplay/elements/rain.c
+    src/gameplay/elements/amant.c
     src/gui/callback.c
+    src/gui/gui_amant.c
     src/gui/gui_board.c
     src/gui/gui_title.c
     src/gui/gui_god_intervention.c

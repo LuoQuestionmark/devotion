@@ -22,7 +22,7 @@ void draw_board(Olivec_Canvas canvas, board *bd) {
                 break;
             }
 
-            olivec_rect(canvas, i * BOARD_EDGE_LEN, j * BOARD_EDGE_LEN, BOARD_EDGE_LEN,
+            olivec_rect(canvas, j * BOARD_EDGE_LEN, i * BOARD_EDGE_LEN, BOARD_EDGE_LEN,
                         BOARD_EDGE_LEN, color);
         }
     }

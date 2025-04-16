@@ -1,5 +1,6 @@
 #include "gui/callback.h"
 #include "config.h"
+#include "devotion.h"
 #include "gameplay/board.h"
 
 static intervention_castor castor = { .intervention_index = -1 };
@@ -18,7 +19,7 @@ static void intervention_intervene_by_index(intervention_list *list, int index, 
     }
 }
 
-void mouse_callback(SDL_Event event, board *board, intervention_list *list) {
+void mouse_callback(SDL_Event event, game_data *const data) {
     SDL_MouseButtonEvent button_event = event.button;
     if (button_event.button != 1) return; // only left click is processed for now
 
@@ -31,8 +32,8 @@ void mouse_callback(SDL_Event event, board *board, intervention_list *list) {
         if (castor.intervention_index == -1) return;
 
         // printf("intervene index %d at map %d %d\n", castor.intervention_index, x_coord, y_coord);
-        intervention_intervene_by_index(list, castor.intervention_index, board, x_coord, y_coord,
-                                        time(NULL));
+        intervention_intervene_by_index(data->intervention_list, castor.intervention_index,
+                                        data->board, x_coord, y_coord, time(NULL));
         castor.intervention_index = -1;
     } else if (button_event.y >= 0 && button_event.y < TITLE_HEIGHT) {
         // within title
