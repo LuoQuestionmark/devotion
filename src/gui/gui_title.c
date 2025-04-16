@@ -8,9 +8,10 @@ void draw_title(Olivec_Canvas canvas, title *title) {
     char whole_name[TITLE_CHARACTERS_BY_LINE * TITLE_CHARACTERS_MAX_LINE_COUNT] = { 0 };
     title_str_cpy(title, whole_name, sizeof(whole_name));
 
-    char temp[TITLE_CHARACTERS_BY_LINE];
+    char temp[TITLE_CHARACTERS_BY_LINE + 1] = {};
+    // char temp[100];
     for (size_t i = 0; i < TITLE_CHARACTERS_MAX_LINE_COUNT; i += 1) {
-        strncpy(temp, whole_name + (TITLE_CHARACTERS_BY_LINE - 1) * i, sizeof(temp) - 1);
+        strncpy(temp, whole_name + (TITLE_CHARACTERS_BY_LINE)*i, TITLE_CHARACTERS_BY_LINE);
         olivec_text(canvas, temp, TITLE_TEXT_WIDTH_SHIFT, TITLE_TEXT_HEIGHT_SHIFT + 25 * i,
                     olivec_default_font, 3, BLUE);
     }
