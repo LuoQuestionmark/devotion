@@ -52,6 +52,8 @@ Olivec_Canvas vc_render(game_data *data, float dt) {
 
     olivec_fill(oc, BACKGROUND_COLOR);
     board_update(data->board, dt);
+    amant_list_evolve(data->board, data->amant_list);
+
     draw_board(oc, data->board);
     draw_title(oc, data->title);
     draw_interventions(oc, data->intervention_list);

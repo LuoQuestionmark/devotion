@@ -168,6 +168,77 @@ void board_backup_type(board *board) {
     }
 }
 
+bool board_nearest_env(board *board, enum cell_type env, board_coord *src, board_coord *tgt,
+                       int depth) {
+    assert(src != NULL && tgt != NULL);
+
+    if (depth <= 0) return false;
+
+    board_coord current_pos = { .row = src->row, .col = src->col };
+
+    if (src->row > 0) {
+        current_pos.row -= 1;
+        if (board->cells[current_pos.row * BOARD_WIDTH + current_pos.col].type == env) {
+            // find it!
+            tgt->row = current_pos.row;
+            tgt->col = current_pos.col;
+            return true;
+        }
+
+        bool recursive_ans = board_nearest_env(board, env, &current_pos, tgt, depth - 1);
+        if (recursive_ans) return true;
+
+        current_pos.row += 1;
+    }
+
+    if (src->row < BOARD_HEIGHT - 1) {
+        current_pos.row += 1;
+        if (board->cells[current_pos.row * BOARD_WIDTH + current_pos.col].type == env) {
+            // find it!
+            tgt->row = current_pos.row;
+            tgt->col = current_pos.col;
+            return true;
+        }
+
+        bool recursive_ans = board_nearest_env(board, env, &current_pos, tgt, depth - 1);
+        if (recursive_ans) return true;
+
+        current_pos.row -= 1;
+    }
+
+    if (src->col > 0) {
+        current_pos.col -= 1;
+        if (board->cells[current_pos.row * BOARD_WIDTH + current_pos.col].type == env) {
+            // find it!
+            tgt->row = current_pos.row;
+            tgt->col = current_pos.col;
+            return true;
+        }
+
+        bool recursive_ans = board_nearest_env(board, env, &current_pos, tgt, depth - 1);
+        if (recursive_ans) return true;
+
+        current_pos.col += 1;
+    }
+
+    if (src->col < BOARD_WIDTH - 1) {
+        current_pos.col += 1;
+        if (board->cells[current_pos.row * BOARD_WIDTH + current_pos.col].type == env) {
+            // find it!
+            tgt->row = current_pos.row;
+            tgt->col = current_pos.col;
+            return true;
+        }
+
+        bool recursive_ans = board_nearest_env(board, env, &current_pos, tgt, depth - 1);
+        if (recursive_ans) return true;
+
+        current_pos.col -= 1;
+    }
+
+    return false;
+}
+
 cell_list *board_cell_next(board *board, int cell_row, int cell_col) {
     int is_top, is_button, is_leftmost, is_rightmost;
     is_top       = cell_row == 0;

@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.15.0)
 project(devotion VERSION 0.1.0 LANGUAGES C)
 
+set(CMAKE_C_COMPILER "gcc")
+
 add_compile_options(-fsanitize=address)
 add_link_options(-fsanitize=address)
 

@@ -1,6 +1,7 @@
 #ifndef AMANT_H
 #define AMANT_H
 
+#include "gameplay/board.h"
 #include <stdbool.h>
 
 enum amant_state {
@@ -25,7 +26,7 @@ amant_list init_amant_list();
 bool amant_list_add(amant_list list, short row, short col);
 void amant_list_free(amant_list list);
 
-void amant_evolve(amant *amant);
-void amant_list_evolve(amant_list list);
+void amant_evolve(board *board, amant *amant);
+void amant_list_evolve(board *board, amant_list list);
 
 #endif

@@ -37,6 +37,12 @@ struct board {
 };
 typedef struct board board;
 
+struct board_coord {
+    unsigned short row;
+    unsigned short col;
+};
+typedef struct board_coord board_coord;
+
 struct cell_list {
     int len;
     int *indices;
@@ -55,6 +61,9 @@ void board_transform_if_neighbor(board *board, enum cell_type src, enum cell_typ
 void board_transform_from_map(board *board, enum cell_type src, enum cell_type tgt, map *map);
 
 void board_backup_type(board *board);
+
+bool board_nearest_env(board *board, enum cell_type env, board_coord *src, board_coord *tgt,
+                       int depth);
 
 cell_list *board_cell_next(board *board, int cell_row, int cell_col);
 void cell_list_free(cell_list *cell_list);
