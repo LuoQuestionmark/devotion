@@ -13,11 +13,11 @@ void draw_interventions(Olivec_Canvas canvas, intervention_list *list) {
         olivec_rect(canvas, GOD_INTERVENTION_WIDTH_SHIFT,
                     GOD_INTERVENTION_HEIGHT_SHIFT + GOD_INTERVENTION_UNITY_HEIGHT * i,
                     GOD_INTERVENTION_WIDTH, GOD_INTERVENTION_UNITY_HEIGHT, bg_color);
-
+        // name
         olivec_text(canvas, next_intervention.name, GOD_INTERVENTION_TEXT_WIDTH_SHIFT,
                     GOD_INTERVENTION_TEXT_HEIGHT_SHIFT + GOD_INTERVENTION_UNITY_HEIGHT * i,
                     olivec_default_font, 3, GREEN);
-
+        // description
         olivec_text(canvas, next_intervention.description, GOD_INTERVENTION_TEXT_WIDTH_SHIFT,
                     GOD_INTERVENTION_TEXT_HEIGHT_SHIFT + GOD_INTERVENTION_UNITY_HEIGHT * i + 25,
                     olivec_default_font, 3, BLUE);

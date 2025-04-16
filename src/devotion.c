@@ -105,7 +105,7 @@ int main(void) {
                     return_defer(0);
                 } break;
                 case SDL_MOUSEBUTTONDOWN:
-                    mouse_callback(event);
+                    mouse_callback(event, bd, list);
                     break;
                     // case SDL_KEYDOWN: {
                     //     if (event.key.keysym.sym == SDLK_SPACE)

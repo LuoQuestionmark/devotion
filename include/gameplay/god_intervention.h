@@ -2,6 +2,7 @@
 #define GOD_INTERVENTION_H
 
 #include "gameplay/board.h"
+#include "gameplay/god_intervention_impl.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <time.h>
@@ -17,12 +18,15 @@ struct intervention {
 typedef struct intervention intervention;
 
 static const intervention intervention_table[INTERVENTION_MAX_COUNT] = {
-    { .id = 0, .name = "intervention 1", .description = "description 1", .callback = NULL },
-    { .id = 1, .name = "intervention 2", .description = "description 2", .callback = NULL },
-    { .id = 2, .name = "intervention 3", .description = "description 3", .callback = NULL },
-    { .id = 3, .name = "intervention 4", .description = "description 4", .callback = NULL },
-    { .id = 4, .name = "intervention 5", .description = "description 5", .callback = NULL },
-    { .id = 5, .name = "intervention 6", .description = "description 6", .callback = NULL },
+    { .id          = 0,
+     .name        = "intervention 1",
+     .description = "description 1",
+     .callback    = intervene_test                                                                 },
+    { .id = 1,          .name = "intervention 2", .description = "description 2", .callback = NULL },
+    { .id = 2,          .name = "intervention 3", .description = "description 3", .callback = NULL },
+    { .id = 3,          .name = "intervention 4", .description = "description 4", .callback = NULL },
+    { .id = 4,          .name = "intervention 5", .description = "description 5", .callback = NULL },
+    { .id = 5,          .name = "intervention 6", .description = "description 6", .callback = NULL },
 };
 
 struct intervention_list {

@@ -14,6 +14,7 @@ add_executable(main
     src/gameplay/board.c
     src/gameplay/title.c
     src/gameplay/god_intervention.c
+    src/gameplay/god_intervention_impl.c
     src/gui/callback.c
     src/gui/gui_board.c
     src/gui/gui_title.c
