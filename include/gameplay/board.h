@@ -1,6 +1,8 @@
 #ifndef BOARD_H
 #define BOARD_H
 
+#include "config.h"
+#include "gameplay/elements/rain.h"
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -31,6 +33,8 @@ struct board {
     cell *cells;
     uint8_t row;
     uint8_t col;
+
+    rain_map *rain_map;
 };
 typedef struct board board;
 
@@ -49,6 +53,8 @@ void board_free(board *board);
 void board_transform(board *board, enum cell_type src, enum cell_type tgt, float rate);
 void board_transform_if_neighbor(board *board, enum cell_type src, enum cell_type tgt,
                                  enum cell_type nbr, float rate);
+void board_transform_from_map(board *board, enum cell_type src, enum cell_type tgt, int *map);
+
 void board_backup_type(board *board);
 
 cell_list *board_cell_next(board *board, int cell_row, int cell_col);

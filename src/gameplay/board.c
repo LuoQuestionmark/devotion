@@ -1,16 +1,32 @@
 #include "gameplay/board.h"
 #include "config.h"
+#include "gameplay/elements/rain.h"
 #include "olive.c"
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+static void board_init_waterpool(board *board) {
+    rain_map_reset(board->rain_map);
+    for (int i = 0; i < WATERPOOL_INIT_COUNT; i++) {
+        int row, col, radius;
+        row    = rand() * 1.0 * BOARD_HEIGHT / RAND_MAX;
+        col    = rand() * 1.0 * BOARD_WIDTH / RAND_MAX;
+        radius = rand() * 1.0 * (WATERPOOL_MAX_RADIUS - WATERPOOL_MIN_RADIUS) / RAND_MAX +
+                 WATERPOOL_MIN_RADIUS;
+
+        rain_map_set_hot_point(board->rain_map, row, col, RAND_MAX, radius);
+    }
+}
 
 board *init_board() {
     srand(42); // DEBUG
 
-    board *ret = calloc(1, sizeof(board));
-    ret->col   = BOARD_WIDTH;
-    ret->row   = BOARD_HEIGHT;
-    ret->cells = calloc(BOARD_WIDTH * BOARD_HEIGHT, sizeof(cell));
+    board *ret    = calloc(1, sizeof(board));
+    ret->col      = BOARD_WIDTH;
+    ret->row      = BOARD_HEIGHT;
+    ret->cells    = calloc(BOARD_WIDTH * BOARD_HEIGHT, sizeof(cell));
+    ret->rain_map = init_rain_map();
 
     board_init_env(ret);
     board_stats(ret);
@@ -19,10 +35,12 @@ board *init_board() {
 
 void board_init_env(board *board) {
     // init water
-    board_transform(board, CELL_EMPTY, CELL_WATER, WATER_SPAWN_RATE);
+    board_init_waterpool(board);
+    board_transform_from_map(board, CELL_EMPTY, CELL_WATER, board->rain_map->map);
+    rain_map_reset(board->rain_map);
 
     // init grass
-    board_transform_if_neighbor(board, CELL_EMPTY, CELL_GRASS, CELL_WATER, GRASS_SPAWN_RATE);
+    board_transform(board, CELL_EMPTY, CELL_GRASS, GRASS_SPAWN_RATE1);
 }
 
 void board_update(board *board, float dt) {
@@ -33,11 +51,12 @@ void board_update(board *board, float dt) {
     cumulative_time_lapse -= REFRESHING_INTEVAL;
 
     board_transform(board, CELL_BURNT, CELL_EMPTY, FIRE_EXTINGUISHMENT_RATE);
+    board_transform(board, CELL_EMPTY, CELL_GRASS, GRASS_SPAWN_RATE1);
     board_transform_if_neighbor(board, CELL_GRASS, CELL_FIRE, CELL_FIRE, FIRE_TRANSMISSION_RATE);
     board_transform_if_neighbor(board, CELL_GRASS, CELL_FIRE, CELL_BURNT, FIRE_TRANSMISSION_RATE);
     board_transform(board, CELL_FIRE, CELL_BURNT, FIRE_EXTINGUISHMENT_RATE);
     board_transform(board, CELL_GRASS, CELL_FIRE, GRASS_IGNITE_RATE);
-    board_transform_if_neighbor(board, CELL_EMPTY, CELL_GRASS, CELL_WATER, GRASS_SPAWN_RATE);
+    board_transform_if_neighbor(board, CELL_EMPTY, CELL_GRASS, CELL_WATER, GRASS_SPAWN_RATE2);
 
     board_backup_type(board);
 }
@@ -72,6 +91,7 @@ void board_stats(board *board) {
 
 void board_free(board *board) {
     free(board->cells);
+    rain_map_free(board->rain_map);
     free(board);
 }
 
@@ -109,6 +129,21 @@ void board_transform_if_neighbor(board *board, enum cell_type src, enum cell_typ
                 }
             }
             cell_list_free(c_list);
+        }
+    }
+}
+
+void board_transform_from_map(board *board, enum cell_type src, enum cell_type tgt, int *map) {
+    assert(board != NULL && map != NULL);
+    int threshold;
+    for (int i = 0; i < board->row; i++) {
+        for (int j = 0; j < board->col; j++) {
+            cell *cell = board->cells + i * BOARD_WIDTH + j;
+            threshold  = map[i * BOARD_WIDTH + j];
+            if (threshold > 0) puts("here");
+            if (cell->last_type == src && rand() <= threshold) {
+                cell->type = tgt;
+            }
         }
     }
 }
