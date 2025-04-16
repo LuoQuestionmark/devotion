@@ -7,5 +7,6 @@
 
 // int (*callback)(board *bd, int row, int col, time_t timestamp);
 int intervene_test(board *bd, int row, int col, time_t timestamp);
+int small_rain(board *bd, int row, int col, time_t timestamp);
 
 #endif

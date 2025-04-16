@@ -1,5 +1,6 @@
 #include "gui/gui_god_intervention.h"
 #include "config.h"
+#include <string.h>
 
 void draw_interventions(Olivec_Canvas canvas, intervention_list *list) {
     uint32_t bg_color = WHITE;
@@ -18,8 +19,18 @@ void draw_interventions(Olivec_Canvas canvas, intervention_list *list) {
                     GOD_INTERVENTION_TEXT_HEIGHT_SHIFT + GOD_INTERVENTION_UNITY_HEIGHT * i,
                     olivec_default_font, 3, GREEN);
         // description
-        olivec_text(canvas, next_intervention.description, GOD_INTERVENTION_TEXT_WIDTH_SHIFT,
+        char description1[GOD_INTERVENTION_MAX_LINE_CHARACTERS + 1] = "";
+        char description2[GOD_INTERVENTION_MAX_LINE_CHARACTERS + 1] = "";
+        strncpy(description1, next_intervention.description, GOD_INTERVENTION_MAX_LINE_CHARACTERS);
+        olivec_text(canvas, description1, GOD_INTERVENTION_TEXT_WIDTH_SHIFT,
                     GOD_INTERVENTION_TEXT_HEIGHT_SHIFT + GOD_INTERVENTION_UNITY_HEIGHT * i + 25,
+                    olivec_default_font, 3, BLUE);
+
+        if (strlen(next_intervention.description) <= GOD_INTERVENTION_MAX_LINE_CHARACTERS) continue;
+        strncpy(description2, next_intervention.description + GOD_INTERVENTION_MAX_LINE_CHARACTERS,
+                GOD_INTERVENTION_MAX_LINE_CHARACTERS);
+        olivec_text(canvas, description2, GOD_INTERVENTION_TEXT_WIDTH_SHIFT,
+                    GOD_INTERVENTION_TEXT_HEIGHT_SHIFT + GOD_INTERVENTION_UNITY_HEIGHT * i + 50,
                     olivec_default_font, 3, BLUE);
     }
 }

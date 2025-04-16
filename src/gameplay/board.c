@@ -36,7 +36,7 @@ board *init_board() {
 void board_init_env(board *board) {
     // init water
     board_init_waterpool(board);
-    board_transform_from_map(board, CELL_EMPTY, CELL_WATER, board->rain_map->map);
+    board_transform_from_map(board, CELL_EMPTY, CELL_WATER, board->rain_map);
     rain_map_reset(board->rain_map);
 
     // init grass
@@ -50,14 +50,25 @@ void board_update(board *board, float dt) {
 
     cumulative_time_lapse -= REFRESHING_INTEVAL;
 
+    // fire to nothing
     board_transform(board, CELL_BURNT, CELL_EMPTY, FIRE_EXTINGUISHMENT_RATE);
+
+    // nothing to grass
     board_transform(board, CELL_EMPTY, CELL_GRASS, GRASS_SPAWN_RATE1);
-    board_transform_if_neighbor(board, CELL_GRASS, CELL_FIRE, CELL_FIRE, FIRE_TRANSMISSION_RATE);
-    board_transform_if_neighbor(board, CELL_GRASS, CELL_FIRE, CELL_BURNT, FIRE_TRANSMISSION_RATE);
-    board_transform(board, CELL_FIRE, CELL_BURNT, FIRE_EXTINGUISHMENT_RATE);
-    board_transform(board, CELL_GRASS, CELL_FIRE, GRASS_IGNITE_RATE);
     board_transform_if_neighbor(board, CELL_EMPTY, CELL_GRASS, CELL_WATER, GRASS_SPAWN_RATE2);
 
+    // nothing to rain
+    board_transform_from_map(board, CELL_EMPTY, CELL_WATER, board->rain_map);
+
+    // grass to fire
+    board_transform(board, CELL_GRASS, CELL_FIRE, GRASS_IGNITE_RATE);
+    board_transform_if_neighbor(board, CELL_GRASS, CELL_FIRE, CELL_BURNT, FIRE_TRANSMISSION_RATE);
+    board_transform_if_neighbor(board, CELL_GRASS, CELL_FIRE, CELL_FIRE, FIRE_TRANSMISSION_RATE);
+
+    // fire to burnt
+    board_transform(board, CELL_FIRE, CELL_BURNT, FIRE_EXTINGUISHMENT_RATE);
+
+    // update cached
     board_backup_type(board);
 }
 
@@ -133,14 +144,13 @@ void board_transform_if_neighbor(board *board, enum cell_type src, enum cell_typ
     }
 }
 
-void board_transform_from_map(board *board, enum cell_type src, enum cell_type tgt, int *map) {
+void board_transform_from_map(board *board, enum cell_type src, enum cell_type tgt, map *map) {
     assert(board != NULL && map != NULL);
     int threshold;
     for (int i = 0; i < board->row; i++) {
         for (int j = 0; j < board->col; j++) {
             cell *cell = board->cells + i * BOARD_WIDTH + j;
-            threshold  = map[i * BOARD_WIDTH + j];
-            if (threshold > 0) puts("here");
+            threshold  = map->map[i * BOARD_WIDTH + j];
             if (cell->last_type == src && rand() <= threshold) {
                 cell->type = tgt;
             }

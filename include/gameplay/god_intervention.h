@@ -19,9 +19,9 @@ typedef struct intervention intervention;
 
 static const intervention intervention_table[INTERVENTION_MAX_COUNT] = {
     { .id          = 0,
-     .name        = "intervention 1",
-     .description = "description 1",
-     .callback    = intervene_test                                                                 },
+     .name        = "rain",
+     .description = "small rain,    create waterpool",
+     .callback    = small_rain                                                                     },
     { .id = 1,          .name = "intervention 2", .description = "description 2", .callback = NULL },
     { .id = 2,          .name = "intervention 3", .description = "description 3", .callback = NULL },
     { .id = 3,          .name = "intervention 4", .description = "description 4", .callback = NULL },

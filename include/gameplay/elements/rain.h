@@ -6,7 +6,8 @@
 struct map {
     int *map;
 };
-typedef struct map rain_map;
+typedef struct map map;
+typedef map rain_map;
 
 rain_map *init_rain_map();
 void rain_map_reset(rain_map *map);
