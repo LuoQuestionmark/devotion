@@ -28,7 +28,8 @@ amant_list init_amant_list();
 bool amant_list_add(amant_list list, short row, short col);
 void amant_list_free(amant_list list);
 
-void amant_evolve(board *board, amant *amant);
+bool amant_evolve(board *board, amant_list list, amant *amant);
 void amant_list_evolve(board *board, amant_list list);
+void amant_free(amant *amant);
 
 #endif

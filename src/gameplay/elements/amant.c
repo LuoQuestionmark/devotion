@@ -6,13 +6,12 @@
 #include <stdlib.h>
 
 static void random_move(amant *amant) {
-    int choice   = RAND_MAX;
+    int choice   = rand();
     const int t1 = RAND_MAX / 4;
     const int t2 = RAND_MAX / 2;
     const int t3 = RAND_MAX / 4 * 3;
 
     for (int i = 0; i < 4; i++) {
-        printf("%d\n", choice);
         if (choice < t1) {
             if (amant->row < BOARD_HEIGHT - 1) {
                 amant->row++;
@@ -85,7 +84,11 @@ static void amant_target(board *board, amant *amant, enum cell_type tgt) {
     }
 }
 
-static void amant_reproduction(board *board, amant *amant) {}
+static void amant_reproduction(board *board, amant_list list, amant *amant) {
+    amant_list_add(list, amant->row, amant->col);
+    amant_list_add(list, amant->row, amant->col);
+    amant->state = AMANT_DEAD;
+}
 
 amant_list init_amant_list() {
     return calloc(AMANT_LIST_SIZE, sizeof(amant *));
@@ -108,13 +111,12 @@ bool amant_list_add(amant_list list, short row, short col) {
 void amant_list_free(amant_list list) {
     for (int i = 0; i < AMANT_LIST_SIZE; i++) {
         if (list[i] == NULL) continue;
-        free(list[i]->future_steps);
-        free(list[i]);
+        amant_free(list[i]);
     }
     free(list);
 }
 
-void amant_evolve(board *board, amant *amant) {
+bool amant_evolve(board *board, amant_list list, amant *amant) {
     assert(amant != NULL);
     switch (amant->state) {
     case AMANT_UNDEFINED: {
@@ -132,18 +134,28 @@ void amant_evolve(board *board, amant *amant) {
         amant_target(board, amant, CELL_GRASS);
     } break;
     case AMANT_REPRODUCTION: {
-        amant_reproduction(board, amant);
+        amant_reproduction(board, list, amant);
     } break;
     case AMANT_DEAD: {
-        free(amant);
+        return false;
     } break;
     }
+    return true;
 }
 
 void amant_list_evolve(board *board, amant_list list) {
     for (int i = 0; i < AMANT_LIST_SIZE; i++) {
         if (list[i] == NULL) continue;
 
-        amant_evolve(board, list[i]);
+        bool state = amant_evolve(board, list, list[i]);
+        if (!state) {
+            amant_free(list[i]);
+            list[i] = NULL;
+        }
     }
+}
+
+void amant_free(amant *amant) {
+    free(amant->future_steps);
+    free(amant);
 }
