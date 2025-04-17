@@ -31,9 +31,9 @@ void mouse_callback(SDL_Event event, game_data *const data) {
 
         if (castor.intervention_index == -1) return;
 
-        // printf("intervene index %d at map %d %d\n", castor.intervention_index, x_coord, y_coord);
+        printf("intervene index %d at map %d %d\n", castor.intervention_index, x_coord, y_coord);
         intervention_intervene_by_index(data->intervention_list, castor.intervention_index,
-                                        data->board, x_coord, y_coord, time(NULL));
+                                        data->board, y_coord, x_coord, time(NULL));
         castor.intervention_index = -1;
     } else if (button_event.y >= 0 && button_event.y < TITLE_HEIGHT) {
         // within title
