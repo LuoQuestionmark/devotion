@@ -6,23 +6,28 @@
 #include <stdlib.h>
 
 static void random_move(amant *amant) {
-    int choice = RAND_MAX / rand();
+    int choice   = RAND_MAX;
+    const int t1 = RAND_MAX / 4;
+    const int t2 = RAND_MAX / 2;
+    const int t3 = RAND_MAX / 4 * 3;
+
     for (int i = 0; i < 4; i++) {
-        if (choice >= 4) {
+        printf("%d\n", choice);
+        if (choice < t1) {
             if (amant->row < BOARD_HEIGHT - 1) {
                 amant->row++;
                 break;
             } else {
                 continue;
             }
-        } else if (choice >= 2) {
+        } else if (choice < t2) {
             if (amant->row > 0) {
                 amant->row--;
                 break;
             } else {
                 continue;
             }
-        } else if (choice >= 1) {
+        } else if (choice < t3) {
             if (amant->col < BOARD_WIDTH - 1) {
                 amant->col++;
                 break;
@@ -40,13 +45,14 @@ static void random_move(amant *amant) {
     }
 }
 
-static void amant_thirsty(board *board, amant *amant) {
-    board_coord local  = { .row = amant->row, .col = amant->col };
-    board_coord target = { 0 };
+static void amant_target(board *board, amant *amant, enum cell_type tgt) {
+    board_coord local = { .row = amant->row, .col = amant->col };
+    board_coord dst   = { 0 };
 
-    if (board->cells[amant->row * BOARD_WIDTH + amant->col].type == CELL_WATER) {
+    if (board->cells[amant->row * BOARD_WIDTH + amant->col].type == tgt) {
         board->cells[amant->row * BOARD_WIDTH + amant->col].type = CELL_EMPTY;
         amant->completed_mission_count += 1;
+        amant->future_step_index = -1;
         if (amant->completed_mission_count > AMANT_MAX_MISSION_COUNT) {
             amant->state = AMANT_REPRODUCTION;
         } else {
@@ -55,80 +61,24 @@ static void amant_thirsty(board *board, amant *amant) {
         return;
     }
 
-    bool found = false;
-    found      = board_nearest_env(board, CELL_WATER, &local, &target, BOARD_MAX_SEARCHING_DEPTH);
-    if (found) {
-        if (target.row > local.row) {
-            amant->row += 1;
-            return;
-        }
+    if (amant->future_step_index >= 0) {
+        amant->row = amant->future_steps[amant->future_step_index].row;
+        amant->col = amant->future_steps[amant->future_step_index].col;
 
-        if (target.col > amant->col) {
-            amant->col += 1;
-            return;
-        }
-
-        if (target.row < local.row) {
-            amant->row -= 1;
-            return;
-        }
-
-        if (target.col < amant->col) {
-            amant->col -= 1;
-            return;
-        }
-
-    } else {
-        // random move
-        random_move(amant);
-    }
-}
-
-static void amant_hungry(board *board, amant *amant) {
-    board_coord local  = { .row = amant->row, .col = amant->col };
-    board_coord target = { 0 };
-
-    if (board->cells[amant->row * BOARD_WIDTH + amant->col].type == CELL_GRASS) {
-        board->cells[amant->row * BOARD_WIDTH + amant->col].type = CELL_EMPTY;
-        amant->completed_mission_count += 1;
-        if (amant->completed_mission_count > AMANT_MAX_MISSION_COUNT) {
-            amant->state = AMANT_REPRODUCTION;
-        } else {
-            amant->state = AMANT_UNDEFINED;
+        amant->future_step_index += 1;
+        if (amant->future_step_index >= AMANT_MAX_FUTURE_STEPS) {
+            // finish tour
+            amant->future_step_index = -1;
         }
         return;
     }
 
     bool found = false;
-    found      = board_nearest_env(board, CELL_GRASS, &local, &target, BOARD_MAX_SEARCHING_DEPTH);
+    found =
+        board_nearest_env(board, tgt, &local, &dst, BOARD_MAX_SEARCHING_DEPTH, amant->future_steps);
     if (found) {
-        if (target.row > local.row) {
-            amant->row += 1;
-            return;
-        }
-
-        if (target.col > amant->col) {
-            amant->col += 1;
-            return;
-        }
-
-        if (target.row < local.row) {
-            amant->row -= 1;
-            return;
-        }
-
-        if (target.col < amant->col) {
-            amant->col -= 1;
-            return;
-        }
-
-        amant->completed_mission_count += 1;
-        if (amant->completed_mission_count > AMANT_MAX_MISSION_COUNT) {
-            amant->state = AMANT_REPRODUCTION;
-        } else {
-            amant->state = AMANT_UNDEFINED;
-        }
-
+        // set movement
+        amant->future_step_index = 0;
     } else {
         // random move
         random_move(amant);
@@ -144,9 +94,11 @@ amant_list init_amant_list() {
 bool amant_list_add(amant_list list, short row, short col) {
     for (int i = 0; i < AMANT_LIST_SIZE; i++) {
         if (list[i] == NULL) {
-            list[i]      = calloc(1, sizeof(amant));
-            list[i]->row = row;
-            list[i]->col = col;
+            list[i]                    = calloc(1, sizeof(amant));
+            list[i]->row               = row;
+            list[i]->col               = col;
+            list[i]->future_step_index = -1;
+            list[i]->future_steps      = calloc(AMANT_MAX_FUTURE_STEPS, sizeof(board_coord));
             return true;
         }
     }
@@ -156,6 +108,7 @@ bool amant_list_add(amant_list list, short row, short col) {
 void amant_list_free(amant_list list) {
     for (int i = 0; i < AMANT_LIST_SIZE; i++) {
         if (list[i] == NULL) continue;
+        free(list[i]->future_steps);
         free(list[i]);
     }
     free(list);
@@ -173,10 +126,10 @@ void amant_evolve(board *board, amant *amant) {
         }
     } break;
     case AMANT_THIRSTY: {
-        amant_thirsty(board, amant);
+        amant_target(board, amant, CELL_WATER);
     } break;
     case AMANT_HUNGRY: {
-        amant_hungry(board, amant);
+        amant_target(board, amant, CELL_GRASS);
     } break;
     case AMANT_REPRODUCTION: {
         amant_reproduction(board, amant);

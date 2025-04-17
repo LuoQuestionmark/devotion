@@ -17,6 +17,8 @@ struct amant {
     short col;
     enum amant_state state;
     int completed_mission_count;
+    int future_step_index;
+    board_coord *future_steps;
 };
 typedef struct amant amant;
 

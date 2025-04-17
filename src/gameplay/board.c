@@ -169,8 +169,8 @@ void board_backup_type(board *board) {
 }
 
 bool board_nearest_env(board *board, enum cell_type env, board_coord *src, board_coord *tgt,
-                       int depth) {
-    assert(src != NULL && tgt != NULL);
+                       int depth, board_coord *steps) {
+    assert(src != NULL && tgt != NULL && steps != NULL);
 
     if (depth <= 0) return false;
 
@@ -178,6 +178,8 @@ bool board_nearest_env(board *board, enum cell_type env, board_coord *src, board
 
     if (src->row > 0) {
         current_pos.row -= 1;
+
+        steps[AMANT_MAX_FUTURE_STEPS - depth] = current_pos;
         if (board->cells[current_pos.row * BOARD_WIDTH + current_pos.col].type == env) {
             // find it!
             tgt->row = current_pos.row;
@@ -185,7 +187,7 @@ bool board_nearest_env(board *board, enum cell_type env, board_coord *src, board
             return true;
         }
 
-        bool recursive_ans = board_nearest_env(board, env, &current_pos, tgt, depth - 1);
+        bool recursive_ans = board_nearest_env(board, env, &current_pos, tgt, depth - 1, steps);
         if (recursive_ans) return true;
 
         current_pos.row += 1;
@@ -193,6 +195,8 @@ bool board_nearest_env(board *board, enum cell_type env, board_coord *src, board
 
     if (src->row < BOARD_HEIGHT - 1) {
         current_pos.row += 1;
+
+        steps[AMANT_MAX_FUTURE_STEPS - depth] = current_pos;
         if (board->cells[current_pos.row * BOARD_WIDTH + current_pos.col].type == env) {
             // find it!
             tgt->row = current_pos.row;
@@ -200,7 +204,7 @@ bool board_nearest_env(board *board, enum cell_type env, board_coord *src, board
             return true;
         }
 
-        bool recursive_ans = board_nearest_env(board, env, &current_pos, tgt, depth - 1);
+        bool recursive_ans = board_nearest_env(board, env, &current_pos, tgt, depth - 1, steps);
         if (recursive_ans) return true;
 
         current_pos.row -= 1;
@@ -208,6 +212,8 @@ bool board_nearest_env(board *board, enum cell_type env, board_coord *src, board
 
     if (src->col > 0) {
         current_pos.col -= 1;
+
+        steps[AMANT_MAX_FUTURE_STEPS - depth] = current_pos;
         if (board->cells[current_pos.row * BOARD_WIDTH + current_pos.col].type == env) {
             // find it!
             tgt->row = current_pos.row;
@@ -215,7 +221,7 @@ bool board_nearest_env(board *board, enum cell_type env, board_coord *src, board
             return true;
         }
 
-        bool recursive_ans = board_nearest_env(board, env, &current_pos, tgt, depth - 1);
+        bool recursive_ans = board_nearest_env(board, env, &current_pos, tgt, depth - 1, steps);
         if (recursive_ans) return true;
 
         current_pos.col += 1;
@@ -223,6 +229,8 @@ bool board_nearest_env(board *board, enum cell_type env, board_coord *src, board
 
     if (src->col < BOARD_WIDTH - 1) {
         current_pos.col += 1;
+
+        steps[AMANT_MAX_FUTURE_STEPS - depth] = current_pos;
         if (board->cells[current_pos.row * BOARD_WIDTH + current_pos.col].type == env) {
             // find it!
             tgt->row = current_pos.row;
@@ -230,7 +238,7 @@ bool board_nearest_env(board *board, enum cell_type env, board_coord *src, board
             return true;
         }
 
-        bool recursive_ans = board_nearest_env(board, env, &current_pos, tgt, depth - 1);
+        bool recursive_ans = board_nearest_env(board, env, &current_pos, tgt, depth - 1, steps);
         if (recursive_ans) return true;
 
         current_pos.col -= 1;

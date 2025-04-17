@@ -63,7 +63,7 @@ void board_transform_from_map(board *board, enum cell_type src, enum cell_type t
 void board_backup_type(board *board);
 
 bool board_nearest_env(board *board, enum cell_type env, board_coord *src, board_coord *tgt,
-                       int depth);
+                       int depth, board_coord *steps);
 
 cell_list *board_cell_next(board *board, int cell_row, int cell_col);
 void cell_list_free(cell_list *cell_list);
