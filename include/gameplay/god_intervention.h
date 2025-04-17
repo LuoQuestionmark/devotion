@@ -2,6 +2,7 @@
 #define GOD_INTERVENTION_H
 
 #include "gameplay/board.h"
+#include "gameplay/game_event.h"
 #include "gameplay/god_intervention_impl.h"
 #include <stdbool.h>
 #include <stddef.h>
@@ -13,7 +14,7 @@ struct intervention {
     int id;
     char *name;
     char *description;
-    int (*callback)(board *bd, int row, int col, time_t timestamp);
+    int (*callback)(board *board, game_event_list events, int row, int col, time_t timestamp);
 };
 typedef struct intervention intervention;
 
@@ -37,8 +38,8 @@ typedef struct intervention_list intervention_list;
 intervention_list *init_intervention_list();
 void intervention_list_add(intervention_list *list, int id);
 void intervention_list_rm(intervention_list *list, int id);
-void intervention_intervene(intervention_list *list, int id, board *bd, int row, int col,
-                            time_t timestamp);
+void intervention_intervene(intervention_list *list, int id, board *bd, game_event_list events,
+                            int row, int col, time_t timestamp);
 void intervention_list_free(intervention_list *list);
 
 #endif

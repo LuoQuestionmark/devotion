@@ -2,6 +2,7 @@
 #include "config.h"
 #include "gameplay/board.h"
 #include "gameplay/elements/amant.h"
+#include "gameplay/game_event.h"
 #include "gameplay/god_intervention.h"
 #include "gameplay/title.h"
 #include "gui/callback.h"
@@ -46,13 +47,15 @@ static bool vc_sdl_resize_texture(SDL_Renderer *renderer, size_t new_width, size
     return true;
 }
 
-Olivec_Canvas vc_render(game_data *data, float dt) {
+Olivec_Canvas vc_render(game_data *data, game_event_list events, float dt) {
     assert(data != NULL);
     Olivec_Canvas oc = olivec_canvas(pixels, WIDTH, HEIGHT, WIDTH);
 
     olivec_fill(oc, BACKGROUND_COLOR);
     board_update(data->board, dt);
     amant_list_evolve(data->board, data->amant_list);
+
+    game_event_list_update(events, data);
 
     draw_board(oc, data->board);
     draw_title(oc, data->title);
@@ -72,6 +75,8 @@ int main(void) {
                        .intervention_list = init_intervention_list(),
                        .board             = init_board(),
                        .title             = init_title("god") };
+
+    game_event_list event_list = init_game_event_list();
 
     title_add_prefix(data.title, 1);
     title_add_prefix(data.title, 2);
@@ -116,7 +121,7 @@ int main(void) {
                     return_defer(0);
                 } break;
                 case SDL_MOUSEBUTTONDOWN:
-                    mouse_callback(event, &data);
+                    mouse_callback(event, &data, event_list);
                     break;
                     // case SDL_KEYDOWN: {
                     //     if (event.key.keysym.sym == SDLK_SPACE)
@@ -129,7 +134,7 @@ int main(void) {
 
             if (!pause) {
                 // Render the texture
-                Olivec_Canvas oc_src = vc_render(&data, dt);
+                Olivec_Canvas oc_src = vc_render(&data, event_list, dt);
                 if (oc_src.width != vc_sdl_actual_width || oc_src.height != vc_sdl_actual_height) {
                     if (!vc_sdl_resize_texture(renderer, oc_src.width, oc_src.height))
                         return_defer(1);

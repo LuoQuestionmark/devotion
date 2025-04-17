@@ -2,11 +2,13 @@
 #include "config.h"
 #include "devotion.h"
 #include "gameplay/board.h"
+#include "gameplay/god_intervention.h"
 
 static intervention_castor castor = { .intervention_index = -1 };
 
 static void intervention_intervene_by_index(intervention_list *list, int index, board *board,
-                                            int row, int col, time_t timestamp) {
+                                            game_event_list events, int row, int col,
+                                            time_t timestamp) {
     for (int id = 0; id < INTERVENTION_MAX_COUNT; id++) {
         int ivt = (1 << id);
         if ((list->available & ivt) == 0) continue;
@@ -15,11 +17,11 @@ static void intervention_intervene_by_index(intervention_list *list, int index, 
         if (index >= 0) continue;
 
         intervention next_intervention = intervention_table[id];
-        intervention_intervene(list, id, board, row, col, timestamp);
+        intervention_intervene(list, id, board, events, row, col, timestamp);
     }
 }
 
-void mouse_callback(SDL_Event event, game_data *const data) {
+void mouse_callback(SDL_Event event, void *const data, game_event_list events) {
     SDL_MouseButtonEvent button_event = event.button;
     if (button_event.button != 1) return; // only left click is processed for now
 
@@ -32,8 +34,9 @@ void mouse_callback(SDL_Event event, game_data *const data) {
         if (castor.intervention_index == -1) return;
 
         printf("intervene index %d at map %d %d\n", castor.intervention_index, x_coord, y_coord);
-        intervention_intervene_by_index(data->intervention_list, castor.intervention_index,
-                                        data->board, y_coord, x_coord, time(NULL));
+        intervention_intervene_by_index(((game_data *)data)->intervention_list,
+                                        castor.intervention_index, ((game_data *)data)->board,
+                                        events, y_coord, x_coord, time(NULL));
         castor.intervention_index = -1;
     } else if (button_event.y >= 0 && button_event.y < TITLE_HEIGHT) {
         // within title

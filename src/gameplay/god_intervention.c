@@ -18,8 +18,8 @@ void intervention_list_rm(intervention_list *table, int id) {
     table->available &= intervention;
 }
 
-void intervention_intervene(intervention_list *list, int id, board *bd, int row, int col,
-                            time_t timestamp) {
+void intervention_intervene(intervention_list *list, int id, board *bd, game_event_list events,
+                            int row, int col, time_t timestamp) {
     assert(list != NULL);
     assert(id < INTERVENTION_MAX_COUNT);
 
@@ -29,7 +29,7 @@ void intervention_intervene(intervention_list *list, int id, board *bd, int row,
     if ((list->available & intervention) == 0) return;
     if (intervention_table[id].callback == NULL) return;
 
-    intervention_table[id].callback(bd, row, col, timestamp);
+    intervention_table[id].callback(bd, events, row, col, timestamp);
 }
 
 void intervention_list_free(intervention_list *list) {

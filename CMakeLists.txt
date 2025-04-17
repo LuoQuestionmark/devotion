@@ -15,6 +15,7 @@ add_executable(main
     src/devotion.c
     src/gameplay/board.c
     src/gameplay/title.c
+    src/gameplay/game_event.c
     src/gameplay/god_intervention.c
     src/gameplay/god_intervention_impl.c
     src/gameplay/elements/rain.c

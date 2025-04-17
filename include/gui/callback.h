@@ -1,7 +1,7 @@
 #ifndef CALLBACK_H
 #define CALLBACK_H
 
-#include "devotion.h"
+#include "gameplay/game_event.h"
 #include <SDL2/SDL.h>
 
 struct intervention_castor {
@@ -9,6 +9,6 @@ struct intervention_castor {
 };
 typedef struct intervention_castor intervention_castor;
 
-void mouse_callback(SDL_Event event, game_data *const data);
+void mouse_callback(SDL_Event event, void *const data, game_event_list events);
 
 #endif
