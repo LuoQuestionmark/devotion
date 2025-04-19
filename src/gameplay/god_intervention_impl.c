@@ -22,3 +22,12 @@ int small_rain(board *bd, game_event_list events, int row, int col, time_t times
     game_event_list_add(events, rain_stop, 10);
     return 0;
 }
+
+int big_rain(board *bd, game_event_list events, int row, int col, time_t timestamp) {
+    // game_event_list list = ((game_data *)data)->events;
+    rain_map_reset(bd->rain_map);
+    rain_map_set_hot_point(bd->rain_map, row, col, (RAND_MAX * 0.7), 3);
+
+    game_event_list_add(events, rain_stop, 10);
+    return 0;
+}

@@ -18,6 +18,7 @@ add_executable(main
     src/gameplay/game_event.c
     src/gameplay/god_intervention.c
     src/gameplay/god_intervention_impl.c
+    src/gameplay/player.c
     src/gameplay/elements/rain.c
     src/gameplay/elements/amant.c
     src/gui/callback.c

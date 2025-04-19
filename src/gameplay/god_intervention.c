@@ -15,7 +15,7 @@ void intervention_list_add(intervention_list *table, int id) {
 void intervention_list_rm(intervention_list *table, int id) {
     uint32_t intervention = (1 << id);
     uint32_t mask         = ~intervention;
-    table->available &= intervention;
+    table->available &= mask;
 }
 
 void intervention_intervene(intervention_list *list, int id, board *bd, game_event_list events,

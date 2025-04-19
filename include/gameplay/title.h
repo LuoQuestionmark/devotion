@@ -7,10 +7,11 @@
 #define PREFIX_MAX_COUNT 32
 
 static const char prefix_table[PREFIX_MAX_COUNT][16] = {
-    "rainy ",    "all-mighty ", "silent ", "humble ", "eerie ", "prosperous ", "devine ", "strong ",
-    "god-like ", "NULL",        "NULL",    "NULL",    "NULL",   "NULL",        "NULL",    "NULL",
-    "NULL",      "NULL",        "NULL",    "NULL",    "NULL",   "NULL",        "NULL",    "NULL",
-    "NULL",      "NULL",        "NULL",    "NULL",    "NULL",   "NULL",        "NULL",    "NULL",
+    "rainy ",  "all-mighty ", "silent ",      "humble ",      "eerie ", "prosperous ", "devine ",
+    "strong ", "god-like ",   "domiciliary ", "flourishing ", "NULL",   "NULL",        "NULL",
+    "NULL",    "NULL",        "NULL",         "NULL",         "NULL",   "NULL",        "NULL",
+    "NULL",    "NULL",        "NULL",         "NULL",         "NULL",   "NULL",        "NULL",
+    "NULL",    "NULL",        "NULL",         "NULL",
 };
 
 struct title {

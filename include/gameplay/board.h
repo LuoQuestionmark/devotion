@@ -24,7 +24,7 @@ enum cell_creature {
 struct cell {
     enum cell_type type;
     enum cell_type last_type;
-    enum cell_creature creature;
+    // enum cell_creature creature;
 };
 typedef struct cell cell;
 

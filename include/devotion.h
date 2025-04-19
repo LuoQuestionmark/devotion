@@ -4,6 +4,7 @@
 #include "gameplay/board.h"
 #include "gameplay/elements/amant.h"
 #include "gameplay/god_intervention.h"
+#include "gameplay/player.h"
 #include "gameplay/title.h"
 
 struct game_data {
@@ -11,6 +12,7 @@ struct game_data {
     title *title;
     intervention_list *intervention_list;
     amant_list amant_list;
+    player *player;
 };
 typedef struct game_data game_data;
 

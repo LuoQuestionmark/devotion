@@ -57,6 +57,9 @@ Olivec_Canvas vc_render(game_data *data, game_event_list events, float dt) {
 
     game_event_list_update(events, data);
 
+    player_update(data->player, data->board, data->title, data->intervention_list,
+                  data->amant_list);
+
     draw_board(oc, data->board);
     draw_title(oc, data->title);
     draw_interventions(oc, data->intervention_list);
@@ -74,25 +77,26 @@ int main(void) {
     game_data data = { .amant_list        = init_amant_list(),
                        .intervention_list = init_intervention_list(),
                        .board             = init_board(),
-                       .title             = init_title("god") };
+                       .title             = init_title("god"),
+                       .player            = init_player() };
 
     game_event_list event_list = init_game_event_list();
 
-    title_add_prefix(data.title, 1);
-    title_add_prefix(data.title, 2);
-    title_add_prefix(data.title, 3);
-    title_add_prefix(data.title, 4);
-    title_add_prefix(data.title, 5);
-    title_add_prefix(data.title, 6);
-    title_add_prefix(data.title, 7);
-    title_add_prefix(data.title, 8);
+    // title_add_prefix(data.title, 1);
+    // title_add_prefix(data.title, 2);
+    // title_add_prefix(data.title, 3);
+    // title_add_prefix(data.title, 4);
+    // title_add_prefix(data.title, 5);
+    // title_add_prefix(data.title, 6);
+    // title_add_prefix(data.title, 7);
+    // title_add_prefix(data.title, 8);
 
     intervention_list_add(data.intervention_list, 0);
-    intervention_list_add(data.intervention_list, 1);
-    intervention_list_add(data.intervention_list, 2);
-    intervention_list_add(data.intervention_list, 3);
-    intervention_list_add(data.intervention_list, 4);
-    intervention_list_add(data.intervention_list, 5);
+    // intervention_list_add(data.intervention_list, 1);
+    // intervention_list_add(data.intervention_list, 2);
+    // intervention_list_add(data.intervention_list, 3);
+    // intervention_list_add(data.intervention_list, 4);
+    // intervention_list_add(data.intervention_list, 5);
 
     amant_list_add(data.amant_list, 3, 3);
 
@@ -180,6 +184,9 @@ defer:
     title_free(data.title);
     intervention_list_free(data.intervention_list);
     amant_list_free(data.amant_list);
+    player_free(data.player);
+
+    game_event_list_free(event_list);
 
     return result;
 }

@@ -108,6 +108,16 @@ bool amant_list_add(amant_list list, short row, short col) {
     return false;
 }
 
+int amant_list_count(amant_list list) {
+    int ret = 0;
+    for (int i = 0; i < AMANT_LIST_SIZE; i++) {
+        if (list[i] != NULL) {
+            ret += 1;
+        }
+    }
+    return ret;
+}
+
 void amant_list_free(amant_list list) {
     for (int i = 0; i < AMANT_LIST_SIZE; i++) {
         if (list[i] == NULL) continue;
