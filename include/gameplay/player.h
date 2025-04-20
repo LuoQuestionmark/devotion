@@ -1,6 +1,10 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+/**
+ * the player system tracks goals achieved by player.
+ */
+
 #include "gameplay/board.h"
 #include "gameplay/elements/amant.h"
 #include "gameplay/god_intervention.h"

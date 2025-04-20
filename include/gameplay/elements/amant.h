@@ -1,6 +1,15 @@
 #ifndef AMANT_H
 #define AMANT_H
 
+/**
+ * amant is the name of the creature that interact with the world
+ * for now, it can:
+ * - consume water & food
+ * - reproduce itself
+ * - die
+ * the number of amants change the power of god
+ */
+
 #include "gameplay/board.h"
 #include <stdbool.h>
 
@@ -17,6 +26,7 @@ struct amant {
     short col;
     enum amant_state state;
     int completed_mission_count;
+    int life_cycle;
     int future_step_index;
     board_coord *future_steps;
 };

@@ -1,6 +1,10 @@
 #ifndef GOD_INTERVENTION_H
 #define GOD_INTERVENTION_H
 
+/**
+ * god_intervention enable the spell casting system
+ */
+
 #include "gameplay/board.h"
 #include "gameplay/game_event.h"
 #include "gameplay/god_intervention_impl.h"
@@ -18,6 +22,7 @@ struct intervention {
 };
 typedef struct intervention intervention;
 
+// this table contains all the power of god, all of them are not activated
 static const intervention intervention_table[INTERVENTION_MAX_COUNT] = {
     { .id          = 0,
      .name        = "rain",

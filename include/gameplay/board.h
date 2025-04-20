@@ -1,6 +1,12 @@
 #ifndef BOARD_H
 #define BOARD_H
 
+/**
+ * board contains the BOARD_HEIGHT * BOARD_WIDTH size of squares,
+ * each cell has its own `cell_type` that is updated at each iteration with the function
+ * `board_update`
+ */
+
 #include "gameplay/elements/food.h"
 #include "gameplay/elements/rain.h"
 #include <stdbool.h>
