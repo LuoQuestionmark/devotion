@@ -86,7 +86,9 @@ static void amant_target(board *board, amant *amant, enum cell_type tgt) {
 
 static void amant_reproduction(board *board, amant_list list, amant *amant) {
     amant_list_add(list, amant->row, amant->col);
-    amant_list_add(list, amant->row, amant->col);
+    if (amant->life_cycle <= 500) {
+        amant_list_add(list, amant->row, amant->col);
+    }
     amant->state = AMANT_DEAD;
 }
 
@@ -97,11 +99,13 @@ amant_list init_amant_list() {
 bool amant_list_add(amant_list list, short row, short col) {
     for (int i = 0; i < AMANT_LIST_SIZE; i++) {
         if (list[i] == NULL) {
-            list[i]                    = calloc(1, sizeof(amant));
-            list[i]->row               = row;
-            list[i]->col               = col;
-            list[i]->future_step_index = -1;
-            list[i]->future_steps      = calloc(AMANT_MAX_FUTURE_STEPS, sizeof(board_coord));
+            list[i]                          = calloc(1, sizeof(amant));
+            list[i]->row                     = row;
+            list[i]->col                     = col;
+            list[i]->completed_mission_count = 0;
+            list[i]->life_cycle              = 0;
+            list[i]->future_step_index       = -1;
+            list[i]->future_steps            = calloc(AMANT_MAX_FUTURE_STEPS, sizeof(board_coord));
             return true;
         }
     }
@@ -128,6 +132,7 @@ void amant_list_free(amant_list list) {
 
 bool amant_evolve(board *board, amant_list list, amant *amant) {
     assert(amant != NULL);
+    amant->life_cycle += 1;
     switch (amant->state) {
     case AMANT_UNDEFINED: {
         int num = rand();
