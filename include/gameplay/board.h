@@ -1,6 +1,7 @@
 #ifndef BOARD_H
 #define BOARD_H
 
+#include "gameplay/elements/food.h"
 #include "gameplay/elements/rain.h"
 #include <stdbool.h>
 #include <stdint.h>
@@ -13,12 +14,7 @@ enum cell_type {
     CELL_WATER,
     CELL_FIRE,
     CELL_BURNT,
-};
-
-enum cell_creature {
-    CREATURE_EMPTY = 0,
-    CREATURE_AMANT,
-    CREATURE_BEAST
+    CELL_FOOD
 };
 
 struct cell {
@@ -34,6 +30,7 @@ struct board {
     uint8_t col;
 
     rain_map *rain_map;
+    food_map *food_map;
 };
 typedef struct board board;
 
@@ -52,7 +49,7 @@ typedef struct cell_list cell_list;
 board *init_board();
 void board_init_env(board *board);
 void board_update(board *board, float dt);
-void board_stats(board *board);
+// void board_stats(board *board);
 void board_free(board *board);
 
 void board_transform(board *board, enum cell_type src, enum cell_type tgt, float rate);

@@ -20,6 +20,9 @@ void draw_board(Olivec_Canvas canvas, board *bd) {
             case CELL_BURNT:
                 color = POMEGRANATE_PURPLE;
                 break;
+            case CELL_FOOD:
+                color = CINNAMON_BUFF;
+                break;
             }
 
             olivec_rect(canvas, j * BOARD_EDGE_LEN, i * BOARD_EDGE_LEN, BOARD_EDGE_LEN,

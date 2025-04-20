@@ -141,7 +141,7 @@ bool amant_evolve(board *board, amant_list list, amant *amant) {
         amant_target(board, amant, CELL_WATER);
     } break;
     case AMANT_HUNGRY: {
-        amant_target(board, amant, CELL_GRASS);
+        amant_target(board, amant, CELL_FOOD);
     } break;
     case AMANT_REPRODUCTION: {
         amant_reproduction(board, list, amant);

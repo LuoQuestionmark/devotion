@@ -27,9 +27,10 @@ board *init_board() {
     ret->row      = BOARD_HEIGHT;
     ret->cells    = calloc(BOARD_WIDTH * BOARD_HEIGHT, sizeof(cell));
     ret->rain_map = init_rain_map();
+    ret->food_map = init_food_map();
 
     board_init_env(ret);
-    board_stats(ret);
+    // board_stats(ret);
     return ret;
 }
 
@@ -60,6 +61,9 @@ void board_update(board *board, float dt) {
     // nothing to rain
     board_transform_from_map(board, CELL_EMPTY, CELL_WATER, board->rain_map);
 
+    // nothing to food
+    board_transform_from_map(board, CELL_EMPTY, CELL_FOOD, board->food_map);
+
     // grass to fire
     board_transform(board, CELL_GRASS, CELL_FIRE, GRASS_IGNITE_RATE);
     board_transform_if_neighbor(board, CELL_GRASS, CELL_FIRE, CELL_BURNT, FIRE_TRANSMISSION_RATE);
@@ -72,37 +76,38 @@ void board_update(board *board, float dt) {
     board_backup_type(board);
 }
 
-void board_stats(board *board) {
-    int water_count = 0;
-    int grass_count = 0;
-    int fire_count  = 0;
+// void board_stats(board *board) {
+//     int water_count = 0;
+//     int grass_count = 0;
+//     int fire_count  = 0;
 
-    for (int i = 0; i < board->row; i++) {
-        for (int j = 0; j < board->col; j++) {
-            switch (board->cells[i * BOARD_WIDTH + j].type) {
-            case CELL_WATER:
-                water_count += 1;
-                break;
-            case CELL_EMPTY:
-                break;
-            case CELL_GRASS:
-                grass_count += 1;
-                break;
-            case CELL_FIRE:
-            case CELL_BURNT:
-                fire_count += 1;
-                break;
-            }
-        }
-    }
+//     for (int i = 0; i < board->row; i++) {
+//         for (int j = 0; j < board->col; j++) {
+//             switch (board->cells[i * BOARD_WIDTH + j].type) {
+//             case CELL_WATER:
+//                 water_count += 1;
+//                 break;
+//             case CELL_EMPTY:
+//                 break;
+//             case CELL_GRASS:
+//                 grass_count += 1;
+//                 break;
+//             case CELL_FIRE:
+//             case CELL_BURNT:
+//                 fire_count += 1;
+//                 break;
+//             }
+//         }
+//     }
 
-    printf("board row = %d, col = %d\n", board->row, board->col);
-    printf("water: %d, grass: %d\n, fire: %d\n", water_count, grass_count, fire_count);
-}
+//     printf("board row = %d, col = %d\n", board->row, board->col);
+//     printf("water: %d, grass: %d\n, fire: %d\n", water_count, grass_count, fire_count);
+// }
 
 void board_free(board *board) {
     free(board->cells);
     rain_map_free(board->rain_map);
+    food_map_free(board->food_map);
     free(board);
 }
 

@@ -1,5 +1,4 @@
 #include "gameplay/player.h"
-#include <stdio.h>
 
 player *init_player() {
     player *ret = calloc(1, sizeof(player));

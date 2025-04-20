@@ -18,6 +18,7 @@ static void intervention_intervene_by_index(intervention_list *list, int index, 
 
         intervention next_intervention = intervention_table[id];
         intervention_intervene(list, id, board, events, row, col, timestamp);
+        break;
     }
 }
 

@@ -1,5 +1,6 @@
 #include "gameplay/god_intervention.h"
 #include <assert.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 intervention_list *init_intervention_list() {
@@ -24,6 +25,8 @@ void intervention_intervene(intervention_list *list, int id, board *bd, game_eve
     assert(id < INTERVENTION_MAX_COUNT);
 
     uint32_t intervention = (1 << id);
+
+    printf("intervene\n");
 
     // if unavailable, return
     if ((list->available & intervention) == 0) return;

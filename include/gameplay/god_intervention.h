@@ -22,12 +22,12 @@ static const intervention intervention_table[INTERVENTION_MAX_COUNT] = {
     { .id          = 0,
      .name        = "rain",
      .description = "small rain,    create waterpool",
-     .callback    = small_rain                                                                         },
-    { .id = 1,          .name = "tempete",        .description = "bigger rain",   .callback = big_rain },
-    { .id = 2,          .name = "intervention 3", .description = "description 3", .callback = NULL     },
-    { .id = 3,          .name = "intervention 4", .description = "description 4", .callback = NULL     },
-    { .id = 4,          .name = "intervention 5", .description = "description 5", .callback = NULL     },
-    { .id = 5,          .name = "intervention 6", .description = "description 6", .callback = NULL     },
+     .callback    = small_rain                                                                            },
+    { .id = 1,          .name = "tempete",        .description = "bigger rain",   .callback = big_rain    },
+    { .id = 2,          .name = "feast",          .description = "create food",   .callback = small_feast },
+    { .id = 3,          .name = "intervention 4", .description = "description 4", .callback = NULL        },
+    { .id = 4,          .name = "intervention 5", .description = "description 5", .callback = NULL        },
+    { .id = 5,          .name = "intervention 6", .description = "description 6", .callback = NULL        },
 };
 
 struct intervention_list {

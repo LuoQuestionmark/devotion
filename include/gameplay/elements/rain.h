@@ -1,12 +1,8 @@
 #ifndef ELEMENT_RAIN
 #define ELEMENT_RAIN
 
-// each element from 0 to RAND_MAX represent the possibility of rain
+#include "gameplay/elements/common.h"
 
-struct map {
-    int *map;
-};
-typedef struct map map;
 typedef map rain_map;
 
 rain_map *init_rain_map();

@@ -10,5 +10,6 @@
 int intervene_test(board *bd, game_event_list events, int row, int col, time_t timestamp);
 int small_rain(board *bd, game_event_list events, int row, int col, time_t timestamp);
 int big_rain(board *bd, game_event_list events, int row, int col, time_t timestamp);
+int small_feast(board *bd, game_event_list events, int row, int col, time_t timestamp);
 
 #endif
