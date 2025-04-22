@@ -17,6 +17,7 @@ enum amant_state {
     AMANT_UNDEFINED,
     AMANT_THIRSTY,
     AMANT_HUNGRY,
+    AMANT_TEMPLE,
     AMANT_REPRODUCTION,
     AMANT_DEAD,
 };

@@ -22,12 +22,13 @@ static void board_init_waterpool(board *board) {
 board *init_board() {
     srand(42); // DEBUG
 
-    board *ret    = calloc(1, sizeof(board));
-    ret->col      = BOARD_WIDTH;
-    ret->row      = BOARD_HEIGHT;
-    ret->cells    = calloc(BOARD_WIDTH * BOARD_HEIGHT, sizeof(cell));
-    ret->rain_map = init_rain_map();
-    ret->food_map = init_food_map();
+    board *ret           = calloc(1, sizeof(board));
+    ret->col             = BOARD_WIDTH;
+    ret->row             = BOARD_HEIGHT;
+    ret->cells           = calloc(BOARD_WIDTH * BOARD_HEIGHT, sizeof(cell));
+    ret->temple_to_build = 0;
+    ret->rain_map        = init_rain_map();
+    ret->food_map        = init_food_map();
 
     board_init_env(ret);
     // board_stats(ret);

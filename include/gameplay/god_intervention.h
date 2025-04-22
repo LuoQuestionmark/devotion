@@ -30,7 +30,10 @@ static const intervention intervention_table[INTERVENTION_MAX_COUNT] = {
      .callback    = small_rain                                                                            },
     { .id = 1,          .name = "tempete",        .description = "bigger rain",   .callback = big_rain    },
     { .id = 2,          .name = "feast",          .description = "create food",   .callback = small_feast },
-    { .id = 3,          .name = "intervention 4", .description = "description 4", .callback = NULL        },
+    { .id          = 3,
+     .name        = "build temple",
+     .description = "ask to build a temple",
+     .callback    = build_temple                                                                          },
     { .id = 4,          .name = "intervention 5", .description = "description 5", .callback = NULL        },
     { .id = 5,          .name = "intervention 6", .description = "description 6", .callback = NULL        },
 };

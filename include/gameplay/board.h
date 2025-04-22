@@ -20,7 +20,9 @@ enum cell_type {
     CELL_WATER,
     CELL_FIRE,
     CELL_BURNT,
-    CELL_FOOD
+    CELL_FOOD,
+    CELL_UNFINISH_TEMPLE,
+    CELL_TEMPLE
 };
 
 struct cell {
@@ -34,6 +36,7 @@ struct board {
     cell *cells;
     uint8_t row;
     uint8_t col;
+    short temple_to_build;
 
     rain_map *rain_map;
     food_map *food_map;

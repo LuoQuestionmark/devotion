@@ -94,7 +94,7 @@ int main(void) {
     intervention_list_add(data.intervention_list, 0);
     // intervention_list_add(data.intervention_list, 1);
     intervention_list_add(data.intervention_list, 2);
-    // intervention_list_add(data.intervention_list, 3);
+    intervention_list_add(data.intervention_list, 3);
     // intervention_list_add(data.intervention_list, 4);
     // intervention_list_add(data.intervention_list, 5);
 

@@ -1,4 +1,5 @@
 #include "gameplay/god_intervention_impl.h"
+#include "config.h"
 #include "devotion.h"
 #include "gameplay/game_event.h"
 #include <stdio.h>
@@ -42,5 +43,12 @@ int small_feast(board *bd, game_event_list events, int row, int col, time_t time
     food_map_set_hot_point(bd->food_map, row, col, (RAND_MAX * 0.7), 3);
 
     game_event_list_add(events, feast_stop, 10);
+    return 0;
+}
+
+int build_temple(board *bd, game_event_list events, int row, int col, time_t timestamp) {
+    printf("build temple at row %d col %d", row, col);
+    bd->cells[row * BOARD_HEIGHT + col].type = CELL_UNFINISH_TEMPLE;
+    bd->temple_to_build++;
     return 0;
 }
